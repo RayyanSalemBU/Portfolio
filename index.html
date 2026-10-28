@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+
+  <!-- Cousine is metric-compatible with Liberation Mono, used as a fallback -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cousine&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="hero" id="home">
+    <canvas id="heroFx" aria-hidden="true"></canvas>
+
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="item" href="#about"><span class="linktext">about</span></a>
+      <a class="item" href="#experience"><span class="linktext">experience</span></a>
+
+      <a class="logo" href="#home" aria-label="Home">
+        <img src="Images/logo.png" alt="Logo">
+      </a>
+
+      <a class="item" href="#work"><span class="linktext">work</span></a>
+      <a class="item" href="#contact"><span class="linktext">contact</span></a>
+    </nav>
+
+    <!-- Hidden visually, but good for semantics and screen readers -->
+    <h1 class="sr-only">Your Name - Your Title</h1>
+  </header>
+
+  <!-- Next sections go here -->
+
+  <script src="hero-fx.js" defer></script>
+</body>
+</html>

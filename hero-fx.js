@@ -9,7 +9,10 @@
   const STATIC  = 0.05;   // constant static (0-1)
   const BURST   = 0.12;   // extra static during glitches
   const SCAN    = 0.04;   // scanline strength
-  const AMBIENT = 0.45;   // brightness of the blurred area around the lens
+  const AMBIENT = 0.28;   // brightness around the lens (lower = darker)
+  const EDGE_DARK = 0.45; // extra darkening toward screen edges (0-1)
+  const BLUR_W  = 24;     // blur size: smaller = blurrier (12-64)
+  const FEATHER = 0.03;   // softness of the lens edge (0.006 = sharp)
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const vs = `
@@ -18,8 +21,8 @@
 
   const fs = `
     precision mediump float;
-    uniform sampler2D tex;   // sharp image
-    uniform sampler2D amb;   // tiny blurred copy
+    uniform sampler2D tex;
+    uniform sampler2D amb;
     uniform vec2  res;
     uniform vec2  vis;
     uniform vec2  off;
@@ -33,12 +36,15 @@
 
     void main(){
       vec2 uv = vec2(gl_FragCoord.x / res.x, 1.0 - gl_FragCoord.y / res.y);
+      vec2 c0 = uv * 2.0 - 1.0;
 
-      // ambient fill: same picture, blurred and dimmed
+      // ambient fill: blurred, cool-tinted, darker toward the edges
       vec3 bg = texture2D(amb, off + uv * vis).rgb * ambient;
+      bg *= vec3(0.8, 0.95, 1.05);
+      bg *= 1.0 - ${EDGE_DARK.toFixed(3)} * smoothstep(0.3, 1.3, length(c0));
 
       // fisheye lens
-      vec2 c = uv * 2.0 - 1.0;
+      vec2 c = c0;
       float r2 = dot(c, c);
       c *= 1.0 + k * r2;
       vec2 d = c * 0.5 + 0.5;
@@ -50,19 +56,16 @@
 
       vec3 sharp = texture2D(tex, off + clamp(d, 0.0, 1.0) * vis).rgb;
 
-      // inside-lens mask with a soft edge (negative m = outside)
+      // soft lens edge
       float m = min(min(d.x, 1.0 - d.x), min(d.y, 1.0 - d.y));
-      float mask = smoothstep(0.0, 0.006, m);
+      float mask = smoothstep(0.0, ${FEATHER.toFixed(4)}, m);
       vec3 col = mix(bg, sharp, mask);
-
-      // faint glowing rim along the lens edge
-      col += vec3(0.35, 0.5, 0.55) * smoothstep(0.012, 0.0, abs(m)) * 0.06;
 
       // static
       float n = hash(gl_FragCoord.xy + t * 17.0);
       col = mix(col, vec3(n), stat + g * burst);
 
-      // smooth scanlines (4px period) + gentle vignette
+      // scanlines + gentle vignette
       col *= 1.0 - scan * (0.5 + 0.5 * sin(gl_FragCoord.y * 1.5708));
       col *= 1.0 - 0.25 * r2 * 0.5;
 
@@ -106,11 +109,11 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   }
 
-  // shrink by halves down to ~48px wide; GPU upscaling makes it a soft blur
+  // shrink by halves down to BLUR_W px wide; GPU upscaling makes it a soft blur
   function tinyCopy(image){
     let w = image.width, h = image.height, src = image;
-    while (w > 48) {
-      w = Math.max(48, w >> 1);
+    while (w > BLUR_W) {
+      w = Math.max(BLUR_W, w >> 1);
       h = Math.max(1, Math.round(h / 2));
       const c = document.createElement('canvas');
       c.width = w; c.height = h;

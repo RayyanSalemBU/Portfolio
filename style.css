@@ -16,6 +16,10 @@ body {
   font-family: 'Liberation Mono', 'Cousine', 'Courier New', monospace;
 }
 
+img {
+  max-width: 100%;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -48,6 +52,17 @@ body {
 
 .hero.fx-on #heroFx {
   display: block;
+}
+
+/* soft darkening at the bottom of the hero, helps the blend */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 30%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ---------- Navbar ---------- */
@@ -137,6 +152,139 @@ body {
   outline: none;
 }
 
+/* ---------- About ---------- */
+.about {
+  position: relative;
+  z-index: 1;                  /* above the hero so the fade can overlap it */
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  margin-top: -22vh;           /* pulls the section up over the hero's bottom */
+  padding: calc(22vh + clamp(48px, 8vw, 120px)) 0 clamp(48px, 8vw, 120px);
+  overflow: hidden;
+  background: #05070a;
+
+  /* top of the section fades in over the hero = cross-dissolve */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 28%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 28%);
+}
+
+/* background layer (moves for parallax, slightly oversized so edges never show) */
+.about-bg {
+  position: absolute;
+  inset: -5%;
+  background: url('Images/aboutmeBgImg.png') center / cover no-repeat;
+  transform: translate3d(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -18px), 0);
+  will-change: transform;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* alternate backgrounds, crossfaded on keyword hover */
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.bg-frontend { background-image: url('Images/aboutmeFrontEndImg.png'); --o: 0.5; }
+.bg-seo      { background-image: url('Images/aboutmeSEOImg.png');      --o: 1; }
+.bg-python   { background-image: url('Images/aboutmePythonImg.png');   --o: 1; }
+.bg-arduino  { background-image: url('Images/aboutmeArduinoImg.png');  --o: 1; }
+
+.about[data-bg="frontend"] .bg-frontend,
+.about[data-bg="seo"]      .bg-seo,
+.about[data-bg="python"]   .bg-python,
+.about[data-bg="arduino"]  .bg-arduino {
+  opacity: var(--o);
+}
+
+.about-card {
+  /* lets the text size itself from the card's width (cqw units) */
+  container-type: inline-size;
+  position: relative;
+  z-index: 1;
+  width: min(88vw, 1100px);
+  transform: translate3d(calc(var(--px, 0) * 10px), calc(var(--py, 0) * 10px), 0);
+  will-change: transform;
+
+  /* text box, as % of the name image: tweak these to nudge it */
+  --tx: 25.8%;                 /* start just right of the ا */
+  --ty: calc(9% + 3.3cqw);     /* drop it below the top of the ا */
+  --tw: 54%;                   /* end before the shadda mark above ر */
+  --ts: 1.75cqw;               /* font size */
+
+  /* hover colours: burnt orange */
+  --hot: linear-gradient(160deg, #c9824a 0%, #a8602c 55%, #7f4520 100%);
+  --hot-text: #c27a42;
+}
+
+.about-card > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* warm copy of the name, cut out with the PNG's own shape */
+.about-name-hot {
+  position: absolute;
+  inset: 0;
+  background: var(--hot);
+  -webkit-mask: url('Images/aboutMeImg.png') center / 100% 100% no-repeat;
+          mask: url('Images/aboutMeImg.png') center / 100% 100% no-repeat;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.about-card.is-hot .about-name-hot {
+  opacity: 1;
+}
+
+.about-text {
+  position: absolute;
+  left: var(--tx);
+  top: var(--ty);
+  width: var(--tw);
+  margin: 0;
+  font-family: 'Kumbh Sans', 'Segoe UI', Arial, sans-serif;
+  font-weight: 500;
+  font-size: var(--ts);
+  line-height: 1.28;
+  color: #99a3a8;
+}
+
+/* every word (wrapped by about-fx.js) warms up on hover */
+.about-text .w,
+.about-text .kw {
+  transition: color 0.25s ease;
+}
+
+.about-text .w:hover,
+.about-text .kw:hover,
+.about-text .kw:focus-visible {
+  color: var(--hot-text);
+}
+
+/* keywords: subtle dotted underline hints that they do something */
+.about-text .kw {
+  cursor: pointer;
+  text-decoration: underline dotted rgba(153, 163, 168, 0.45);
+  text-underline-offset: 0.2em;
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-name-hot,
+  .bg-layer,
+  .about-text .w,
+  .about-text .kw { transition: none; }
+}
+
 /* ---------- Tablets ---------- */
 @media (max-width: 840px) {
   .navbar {
@@ -189,5 +337,25 @@ body {
     width: 46px;
     height: 46px;
     margin: -23px 0 0 -23px;
+  }
+
+  /* About on phones: text goes under the name */
+  .about {
+    min-height: auto;
+    margin-top: -12vh;
+    padding: calc(12vh + 72px) 0 72px;
+  }
+
+  .about-card {
+    width: 92vw;
+  }
+
+  .about-text {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 4px;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 }

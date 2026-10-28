@@ -8,7 +8,7 @@
   <!-- Cousine is metric-compatible with Liberation Mono, used as a fallback -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cousine&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cousine&family=Kumbh+Sans:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -33,8 +33,35 @@
     <h1 class="sr-only">Your Name - Your Title</h1>
   </header>
 
+  <!-- ---------- About ---------- -->
+  <section class="about" id="about" aria-labelledby="about-title">
+    <h2 id="about-title" class="sr-only">About me</h2>
+
+    <div class="about-bg" aria-hidden="true">
+      <div class="bg-layer bg-frontend"></div>
+      <div class="bg-layer bg-seo"></div>
+      <div class="bg-layer bg-python"></div>
+      <div class="bg-layer bg-arduino"></div>
+    </div>
+
+    <div class="about-card" id="aboutCard">
+      <img id="aboutName" src="Images/aboutMeImg.png" alt="Rayan">
+      <span class="about-name-hot" aria-hidden="true"></span>
+      <p class="about-text">
+        Software Engineering student at Bethlehem University interested in
+        mathematics, algorithms, and cybersecurity. Experienced in
+        <span class="kw" data-bg="frontend" tabindex="0">front-end development</span>,
+        <span class="kw" data-bg="seo" tabindex="0">SEO</span>, and
+        interdisciplinary projects involving
+        <span class="kw" data-bg="python" tabindex="0">Python</span> and
+        <span class="kw" data-bg="arduino" tabindex="0">Arduino</span>
+      </p>
+    </div>
+  </section>
+
   <!-- Next sections go here -->
 
   <script src="hero-fx.js" defer></script>
+  <script src="about-fx.js" defer></script>
 </body>
 </html>

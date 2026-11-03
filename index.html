@@ -80,11 +80,7 @@
   </section>
 
   <!-- ---------- Experience ---------- -->
-  <section
-    class="exp"
-    id="experience"
-    aria-labelledby="exp-title"
-  >
+  <section class="exp" id="experience" aria-labelledby="exp-title">
     <div class="exp-track" id="expTrack">
       <div class="exp-stage">
         <h2 class="exp-title" id="exp-title">
@@ -207,10 +203,7 @@
   <!-- ---------- Work ---------- -->
   <section class="work" id="work" aria-labelledby="work-title">
     <h2 class="work-title" id="work-title">
-      <img
-        src="Images/titleWorkImg.png"
-        alt="Work"
-      >
+      <img src="Images/titleWorkImg.png" alt="Work">
     </h2>
 
     <div class="work-list">
@@ -277,6 +270,54 @@
     </div>
   </section>
 
+  <!-- ---------- Contact / Outro ---------- -->
+  <section
+    class="contact"
+    id="contact"
+    aria-labelledby="contact-title"
+  >
+    <div class="contact-bg" aria-hidden="true"></div>
+
+    <canvas
+      id="contactNoise"
+      class="contact-noise"
+      aria-hidden="true"
+    ></canvas>
+
+    <div class="contact-inner">
+      <div class="contact-copy">
+        <h2 class="contact-title" id="contact-title">contact me</h2>
+
+        <a
+          class="contact-email"
+          href="mailto:jsquaree@protonmail.com"
+        >
+          <span>jsquaree@protonmail.com</span>
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M5 19 19 5M5 5h14v14"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <a class="contact-home" href="#home">
+      back to top
+      <span aria-hidden="true">↑</span>
+    </a>
+  </section>
+
   <!-- ---------- Lens filter ---------- -->
   <svg
     width="0"
@@ -314,5 +355,6 @@
   <script src="about-fx.js" defer></script>
   <script src="exp-fx.js" defer></script>
   <script src="work-fx.js" defer></script>
+  <script src="contact-fx.js" defer></script>
 </body>
 </html>

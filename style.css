@@ -193,11 +193,7 @@ img {
   position: absolute;
   inset: auto 0 0 0;
   height: 35%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--ink)
-  );
+  background: linear-gradient(to bottom, transparent, var(--ink));
   pointer-events: none;
   z-index: 0;
 }
@@ -289,14 +285,8 @@ img {
   position: absolute;
   inset: 0;
   background: var(--hot);
-  -webkit-mask:
-    url('Images/aboutMeImg.png')
-    center / 100% 100%
-    no-repeat;
-  mask:
-    url('Images/aboutMeImg.png')
-    center / 100% 100%
-    no-repeat;
+  -webkit-mask: url('Images/aboutMeImg.png') center / 100% 100% no-repeat;
+  mask: url('Images/aboutMeImg.png') center / 100% 100% no-repeat;
   opacity: 0;
   transition: opacity 0.35s ease;
   pointer-events: none;
@@ -518,9 +508,7 @@ img {
   height: 6px;
   border-radius: 50%;
   background: #3a4448;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .exp-dots span.on {
@@ -540,7 +528,6 @@ img {
   background: var(--ink);
 }
 
-/* Work title is displayed in full, without trimming. */
 .work-title {
   position: relative;
   width: min(88vw, 1100px);
@@ -610,7 +597,6 @@ img {
   color: #8c969b;
 }
 
-/* Natural image proportions: no crop, mask or fixed aspect ratio. */
 .work-media {
   min-width: 0;
   margin: 0;
@@ -625,18 +611,240 @@ img {
   object-position: center;
 }
 
-/* Subtle entrance only; no hover zoom or title recolouring. */
 .work.js-reveal .work-item {
   opacity: 0;
   transform: translateY(24px);
-  transition:
-    opacity 0.65s ease,
-    transform 0.65s ease;
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
 .work.js-reveal .work-item.is-in {
   opacity: 1;
   transform: none;
+}
+
+
+/* ---------- Contact / Outro ---------- */
+.contact {
+  --contact-fade: clamp(120px, 20vh, 240px);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* The image is slightly oversized for gentle pointer movement. */
+.contact-bg {
+  position: absolute;
+  inset: -16px;
+  z-index: 0;
+  background:
+    url('Images/ContactBgImg.png')
+    center center / cover
+    no-repeat;
+  transform: translate3d(
+    var(--contact-x, 0px),
+    var(--contact-y, 0px),
+    0
+  );
+  pointer-events: none;
+}
+
+/* Fade from Work, with a dark pocket behind the contact text. */
+.contact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--ink) 0,
+      rgba(7, 10, 14, 0.78) 6%,
+      rgba(7, 10, 14, 0.28) 18%,
+      transparent 32%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(3, 6, 10, 0.78) 0%,
+      rgba(3, 6, 10, 0.58) 28%,
+      rgba(3, 6, 10, 0.18) 54%,
+      transparent 75%
+    ),
+    linear-gradient(
+      to top,
+      rgba(2, 4, 7, 0.88) 0%,
+      transparent 34%
+    );
+  pointer-events: none;
+}
+
+/* Restrained CRT scanlines rather than a framed screen. */
+.contact::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.14) 2px,
+    rgba(0, 0, 0, 0.14) 3px
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--contact-fade)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--contact-fade)
+  );
+  pointer-events: none;
+}
+
+.contact-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  opacity: 0.055;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--contact-fade)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 var(--contact-fade)
+  );
+  pointer-events: none;
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 2;
+  width: min(88vw, 1200px);
+  margin: 0 auto;
+  padding: 160px 0 140px;
+}
+
+.contact-copy {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.contact-title {
+  margin: 0 0 26px;
+  font-family: 'Cousine', 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: #8a9095;
+}
+
+.contact-email {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 28px);
+  max-width: 100%;
+  padding: 0 0 12px;
+  font-family: 'Kumbh Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: clamp(1.3rem, 2.6vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+  color: #b4bec2;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-email span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.contact-email::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(143, 176, 181, 0.55),
+    rgba(143, 176, 181, 0.08)
+  );
+  transform: scaleX(0.28);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.contact-email svg {
+  flex: 0 0 auto;
+  width: clamp(20px, 2.2vw, 30px);
+  height: auto;
+  color: #8fb0b5;
+  transition: transform 0.3s ease;
+}
+
+.contact-email:hover,
+.contact-email:focus-visible {
+  color: #a3bfc3;
+}
+
+.contact-email:hover::after,
+.contact-email:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.contact-email:hover svg,
+.contact-email:focus-visible svg {
+  transform: translate(3px, -3px);
+}
+
+.contact-email:focus-visible {
+  outline: 1px solid #8fb0b5;
+  outline-offset: 10px;
+}
+
+.contact-home {
+  position: absolute;
+  left: max(6vw, calc((100vw - 1200px) / 2));
+  bottom: clamp(28px, 5vh, 56px);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+  font-family: 'Cousine', 'Courier New', monospace;
+  font-size: 0.65rem;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  color: #7e898d;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-home:hover {
+  color: #a3bfc3;
+}
+
+.contact-home:focus-visible {
+  outline: 1px solid #8fb0b5;
+  outline-offset: 6px;
 }
 
 
@@ -653,6 +861,14 @@ img {
   .work-item,
   .work-item.is-flip {
     gap: 28px;
+  }
+
+  .contact-bg {
+    background-position: 58% center;
+  }
+
+  .contact-email {
+    font-size: clamp(1.25rem, 3.4vw, 2rem);
   }
 }
 
@@ -785,6 +1001,54 @@ img {
   .work-media img {
     max-height: 480px;
   }
+
+  .contact {
+    --contact-fade: 140px;
+
+    min-height: 90svh;
+    align-items: end;
+  }
+
+  .contact-bg {
+    background-position: 68% center;
+  }
+
+  .contact::before {
+    background:
+      linear-gradient(
+        to bottom,
+        var(--ink) 0,
+        rgba(7, 10, 14, 0.65) 8%,
+        transparent 30%
+      ),
+      linear-gradient(
+        to top,
+        rgba(3, 6, 10, 0.97) 0%,
+        rgba(3, 6, 10, 0.8) 22%,
+        rgba(3, 6, 10, 0.18) 60%,
+        transparent 80%
+      );
+  }
+
+  .contact-inner {
+    width: 88vw;
+    padding: 220px 0 150px;
+  }
+
+  .contact-title {
+    margin-bottom: 20px;
+    font-size: 0.7rem;
+  }
+
+  .contact-email {
+    gap: 12px;
+    font-size: clamp(1.05rem, 4.6vw, 1.6rem);
+  }
+
+  .contact-home {
+    left: 6vw;
+    bottom: 32px;
+  }
 }
 
 
@@ -803,7 +1067,11 @@ img {
   .exp-slide,
   .exp-media,
   .skill-list li,
-  .exp-dots span {
+  .exp-dots span,
+  .contact-email,
+  .contact-email::after,
+  .contact-email svg,
+  .contact-home {
     transition: none;
   }
 
@@ -811,5 +1079,9 @@ img {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .contact-bg {
+    transform: none;
   }
 }

@@ -1,4 +1,9 @@
 /* ---------- Base ---------- */
+:root {
+  /* site-wide "black with a tint": deep blue-black */
+  --ink: #070a0e;
+}
+
 *,
 *::before,
 *::after {
@@ -28,6 +33,7 @@ img {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
 }
+
 
 /* ---------- Hero ---------- */
 .hero {
@@ -65,6 +71,7 @@ img {
   z-index: 1;
 }
 
+
 /* ---------- Navbar ---------- */
 .navbar {
   position: absolute;
@@ -92,6 +99,7 @@ img {
   height: 40px;
   width: auto;
 }
+
 
 /* ---------- Nav links + small thin ring ---------- */
 .item {
@@ -152,21 +160,33 @@ img {
   outline: none;
 }
 
+
 /* ---------- About ---------- */
 .about {
   position: relative;
   z-index: 1;                  /* above the hero so the fade can overlap it */
-  min-height: 100svh;
+  min-height: 92svh;
   display: grid;
   place-items: center;
   margin-top: -22vh;           /* pulls the section up over the hero's bottom */
-  padding: calc(22vh + clamp(48px, 8vw, 120px)) 0 clamp(48px, 8vw, 120px);
+  padding: calc(22vh + clamp(48px, 8vw, 120px)) 0 clamp(0px, 2vw, 24px);
   overflow: hidden;
   background: #05070a;
 
   /* top of the section fades in over the hero = cross-dissolve */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 28%);
           mask-image: linear-gradient(to bottom, transparent 0%, #000 28%);
+}
+
+/* bottom of About melts into the Experience colour */
+.about::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 35%;
+  background: linear-gradient(to bottom, transparent, var(--ink));
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* background layer (moves for parallax, slightly oversized so edges never show) */
@@ -278,12 +298,188 @@ img {
   outline: none;
 }
 
+
+/* ---------- Experience ---------- */
+.exp {
+  /* fade-in zone over About */
+  --overlap: 26vh;
+  /* breathing room between About and the title lettering */
+  --space-above: clamp(40px, 9vh, 110px);
+  /* breathing room between the title lettering and the first slide */
+  --space-below: clamp(24px, 5vh, 64px);
+
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--overlap) * -1);
+  padding: calc(var(--overlap) + var(--space-above)) 0 0;
+  overflow: clip;              /* not "hidden": hidden would break position: sticky */
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%,   rgba(70, 110, 120, 0.08), transparent 70%),
+    radial-gradient(ellipse 60% 35% at 50% 100%, rgba(120, 70, 40, 0.06),  transparent 70%),
+    var(--ink);
+
+  /* top fades in over About = cross-dissolve, no dividing line */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--overlap));
+          mask-image: linear-gradient(to bottom, transparent 0, #000 var(--overlap));
+}
+
+.exp-title {
+  container-type: inline-size;
+  position: relative;
+  z-index: 3;
+  width: min(88vw, 1100px);
+  margin: 0 auto;
+  overflow: hidden;
+  /* fallback only, used if exp-fx.js can't read the image pixels */
+  --trim-top: 16cqw;
+  --trim-bottom: 8cqw;
+}
+
+.exp-title img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: calc(var(--trim-top) * -1);
+  margin-bottom: calc(var(--trim-bottom) * -1);
+  /* black becomes transparent: the image melts into the section colour */
+  mix-blend-mode: screen;
+}
+
+
+/* ---------- Experience: pinned slides ---------- */
+.exp-track {
+  --slides: 6;                                        /* set automatically by exp-fx.js */
+  --title-h: 0px;                                     /* set automatically by exp-fx.js */
+  height: calc(100svh + (var(--slides) - 1) * 60vh);  /* scroll distance spent on slides */
+  position: relative;
+}
+
+.exp-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  padding-top: clamp(32px, 7vh, 80px);   /* space above the title while pinned */
+}
+
+.exp-slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
+  /* row 1 = title + space below it, row 2 = slide content */
+  grid-template-rows: calc(var(--title-h) + var(--space-below)) minmax(0, 1fr);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease,
+              transform 0.7s cubic-bezier(.2, .7, .2, 1),
+              visibility 0s linear 0.7s;
+}
+
+.exp-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.exp-slide.is-past {
+  transform: translateY(-40px);
+}
+
+/* image fills the whole right side, fading toward the text with a radius */
+.exp-media {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 72%;
+  background: var(--img) center / cover no-repeat;
+  -webkit-mask-image: radial-gradient(ellipse 85% 80% at 100% 50%, #000 35%, transparent 100%);
+          mask-image: radial-gradient(ellipse 85% 80% at 100% 50%, #000 35%, transparent 100%);
+  transform: scale(1.08);
+  transition: transform 1.2s ease;
+  pointer-events: none;
+}
+
+.exp-slide.is-active .exp-media {
+  transform: scale(1);
+}
+
+.exp-copy {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 2;
+  align-self: center;
+  padding-left: clamp(24px, 6vw, 110px);
+}
+
+/* big subtitle, same serif as the skills under it */
+.skill-label {
+  margin: 0 0 clamp(18px, 2.4vw, 34px);
+  max-width: 10em;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 4.2vw, 3.6rem);
+  line-height: 1.15;
+  letter-spacing: 0.005em;
+  color: #aab4b8;
+  filter: url(#lens);
+}
+
+.skill-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+  line-height: 1.9;
+  color: #7e898d;
+}
+
+.skill-list li {
+  transition: color 0.25s ease;
+}
+
+.skill-list li:hover {
+  color: #c27a42;              /* same burnt orange as the About hover */
+}
+
+/* progress dots */
+.exp-dots {
+  position: absolute;
+  right: clamp(14px, 2.5vw, 36px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 10px;
+  z-index: 2;
+}
+
+.exp-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3a4448;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.exp-dots span.on {
+  background: #8fb0b5;
+  transform: scale(1.5);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .about-name-hot,
   .bg-layer,
   .about-text .w,
-  .about-text .kw { transition: none; }
+  .about-text .kw,
+  .exp-slide,
+  .exp-media { transition: none; }
 }
+
 
 /* ---------- Tablets ---------- */
 @media (max-width: 840px) {
@@ -294,6 +490,7 @@ img {
     padding: 0 24px;
   }
 }
+
 
 /* ---------- Phones ---------- */
 @media (max-width: 600px) {
@@ -343,7 +540,7 @@ img {
   .about {
     min-height: auto;
     margin-top: -12vh;
-    padding: calc(12vh + 72px) 0 72px;
+    padding: calc(12vh + 72px) 0 24px;
   }
 
   .about-card {
@@ -357,5 +554,27 @@ img {
     padding: 0 4px;
     font-size: 0.95rem;
     line-height: 1.5;
+  }
+
+  .exp {
+    --overlap: 14vh;
+  }
+
+  /* Experience slides on phones: image behind, text at the bottom */
+  .exp-slide {
+    grid-template-columns: 1fr;
+    padding-bottom: 8vh;
+  }
+
+  .exp-media {
+    width: 100%;
+    opacity: 0.55;
+    -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 95%);
+            mask-image: linear-gradient(to bottom, #000 30%, transparent 95%);
+  }
+
+  .exp-copy {
+    padding: 0 6vw;
+    align-self: end;
   }
 }

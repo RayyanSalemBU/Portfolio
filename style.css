@@ -1,6 +1,7 @@
 /* ---------- Base ---------- */
 :root {
   --ink: #070a0e;
+  --footer-ink: #030609;
 }
 
 *,
@@ -634,10 +635,9 @@ img {
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
-  background: var(--ink);
+  background: var(--footer-ink);
 }
 
-/* The image is slightly oversized for gentle pointer movement. */
 .contact-bg {
   position: absolute;
   inset: -16px;
@@ -654,7 +654,6 @@ img {
   pointer-events: none;
 }
 
-/* Fade from Work, with a dark pocket behind the contact text. */
 .contact::before {
   content: '';
   position: absolute;
@@ -674,28 +673,30 @@ img {
       rgba(3, 6, 10, 0.58) 28%,
       rgba(3, 6, 10, 0.18) 54%,
       transparent 75%
-    ),
-    linear-gradient(
-      to top,
-      rgba(2, 4, 7, 0.88) 0%,
-      transparent 34%
     );
   pointer-events: none;
 }
 
-/* Restrained CRT scanlines rather than a framed screen. */
 .contact::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 4;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 2px,
-    rgba(0, 0, 0, 0.14) 2px,
-    rgba(0, 0, 0, 0.14) 3px
-  );
+  background:
+    linear-gradient(
+      to top,
+      var(--footer-ink) 0%,
+      rgba(3, 6, 9, 0.88) 8%,
+      rgba(3, 6, 9, 0.25) 23%,
+      transparent 38%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 0, 0, 0.09) 2px,
+      rgba(0, 0, 0, 0.09) 3px
+    );
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
@@ -709,22 +710,27 @@ img {
   pointer-events: none;
 }
 
+/* Reduced from 0.055 to 0.03. */
 .contact-noise {
   position: absolute;
   inset: 0;
   z-index: 3;
   width: 100%;
   height: 100%;
-  opacity: 0.055;
+  opacity: 0.03;
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent,
-    #000 var(--contact-fade)
+    transparent 0,
+    #000 var(--contact-fade),
+    #000 72%,
+    transparent 100%
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent,
-    #000 var(--contact-fade)
+    transparent 0,
+    #000 var(--contact-fade),
+    #000 72%,
+    transparent 100%
   );
   pointer-events: none;
 }
@@ -820,31 +826,95 @@ img {
   outline-offset: 10px;
 }
 
-.contact-home {
-  position: absolute;
-  left: max(6vw, calc((100vw - 1200px) / 2));
-  bottom: clamp(28px, 5vh, 56px);
-  z-index: 5;
-  display: inline-flex;
+
+/* ---------- Footer ---------- */
+.site-footer {
+  position: relative;
+  isolation: isolate;
+  background: var(--footer-ink);
+  padding: 16px 0 32px;
+}
+
+.footer-inner {
+  width: min(88vw, 1200px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  padding: 8px 0;
-  font-family: 'Cousine', 'Courier New', monospace;
-  font-size: 0.65rem;
-  line-height: 1.5;
-  letter-spacing: 0.1em;
-  color: #7e898d;
+  gap: clamp(22px, 3vw, 46px);
+}
+
+.footer-signature {
+  display: block;
+  width: clamp(140px, 16vw, 210px);
+  height: auto;
+
+  /* Dark image background blends into the footer. */
+  mix-blend-mode: screen;
+
+  /* Softens the outside edges without a visible image box. */
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 85% at center,
+    #000 62%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 85% at center,
+    #000 62%,
+    transparent 100%
+  );
+
+  opacity: 0.88;
+}
+
+.footer-copy {
+  min-width: 0;
+  font-family: 'Kumbh Sans', 'Segoe UI', Arial, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: #858e93;
+}
+
+.footer-rights {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.footer-credit {
+  margin: 10px 0 0;
+  color: #707c82;
+}
+
+.footer-top {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  min-height: 64px;
+  color: #8a969c;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.contact-home:hover {
+.footer-top svg {
+  display: block;
+  width: 24px;
+  height: 56px;
+  transition: transform 0.3s ease;
+}
+
+.footer-top:hover {
   color: #a3bfc3;
 }
 
-.contact-home:focus-visible {
+.footer-top:hover svg {
+  transform: translateY(-5px);
+}
+
+.footer-top:focus-visible {
   outline: 1px solid #8fb0b5;
-  outline-offset: 6px;
+  outline-offset: 5px;
 }
 
 
@@ -1023,16 +1093,16 @@ img {
       ),
       linear-gradient(
         to top,
-        rgba(3, 6, 10, 0.97) 0%,
-        rgba(3, 6, 10, 0.8) 22%,
-        rgba(3, 6, 10, 0.18) 60%,
+        rgba(3, 6, 9, 0.82) 0%,
+        rgba(3, 6, 9, 0.65) 22%,
+        rgba(3, 6, 9, 0.12) 60%,
         transparent 80%
       );
   }
 
   .contact-inner {
     width: 88vw;
-    padding: 220px 0 150px;
+    padding: 220px 0 130px;
   }
 
   .contact-title {
@@ -1045,9 +1115,40 @@ img {
     font-size: clamp(1.05rem, 4.6vw, 1.6rem);
   }
 
-  .contact-home {
-    left: 6vw;
-    bottom: 32px;
+  .site-footer {
+    padding: 12px 0 28px;
+  }
+
+  .footer-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px 20px;
+  }
+
+  .footer-signature {
+    grid-column: 1;
+    grid-row: 1;
+    width: 150px;
+  }
+
+  .footer-copy {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.74rem;
+  }
+
+  .footer-rights {
+    font-size: 0.65rem;
+    letter-spacing: 0.035em;
+  }
+
+  .footer-credit {
+    margin-top: 6px;
+  }
+
+  .footer-top {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
   }
 }
 
@@ -1071,7 +1172,8 @@ img {
   .contact-email,
   .contact-email::after,
   .contact-email svg,
-  .contact-home {
+  .footer-top,
+  .footer-top svg {
     transition: none;
   }
 
@@ -1082,6 +1184,10 @@ img {
   }
 
   .contact-bg {
+    transform: none;
+  }
+
+  .footer-top:hover svg {
     transform: none;
   }
 }

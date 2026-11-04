@@ -1,4 +1,5 @@
 /* ---------- Base ---------- */
+
 :root {
   --ink: #070a0e;
   --footer-ink: #030609;
@@ -36,6 +37,7 @@ img {
 
 
 /* ---------- Hero ---------- */
+
 .hero {
   position: relative;
   height: 100vh;
@@ -74,6 +76,7 @@ img {
 
 
 /* ---------- Navbar ---------- */
+
 .navbar {
   position: absolute;
   top: 0;
@@ -164,6 +167,7 @@ img {
 
 
 /* ---------- About ---------- */
+
 .about {
   position: relative;
   z-index: 1;
@@ -194,7 +198,11 @@ img {
   position: absolute;
   inset: auto 0 0 0;
   height: 35%;
-  background: linear-gradient(to bottom, transparent, var(--ink));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--ink)
+  );
   pointer-events: none;
   z-index: 0;
 }
@@ -273,6 +281,7 @@ img {
     #a8602c 55%,
     #7f4520 100%
   );
+
   --hot-text: #c27a42;
 }
 
@@ -329,7 +338,8 @@ img {
 }
 
 
-/* ---------- Experience ---------- */
+/* ---------- Experience: pure CSS ---------- */
+
 .exp {
   --overlap: 26vh;
   --space-above: clamp(120px, 26vh, 300px);
@@ -340,6 +350,7 @@ img {
   margin-top: calc(var(--overlap) * -1);
   padding: calc(var(--overlap) + var(--space-above)) 0 0;
   overflow: clip;
+
   background:
     radial-gradient(
       ellipse 70% 40% at 50% 0%,
@@ -352,11 +363,13 @@ img {
       transparent 70%
     ),
     var(--ink);
+
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0,
     #000 var(--overlap)
   );
+
   mask-image: linear-gradient(
     to bottom,
     transparent 0,
@@ -364,33 +377,23 @@ img {
   );
 }
 
-.exp-title {
-  container-type: inline-size;
-  position: relative;
-  z-index: 3;
-  width: min(88vw, 1100px);
-  margin: 0 auto;
-  overflow: hidden;
-
-  --trim-top: 16cqw;
-  --trim-bottom: 8cqw;
-}
-
-.exp-title img {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin-top: calc(var(--trim-top) * -1);
-  margin-bottom: calc(var(--trim-bottom) * -1);
-  mix-blend-mode: screen;
-}
-
 .exp-track {
   --slides: 6;
-  --title-h: 0px;
+  --stage-pad: clamp(32px, 7vh, 80px);
+  --title-width: min(88vw, 1100px);
+
+  /* Uploaded title image: 1080 x 1080.
+     Lettering occupies approximately rows 491 through 555.
+     Two pixels of extra space are retained above and below. */
+  --title-visible-height: calc(var(--title-width) * 0.0638888889);
+
+  --title-h: calc(
+    var(--stage-pad) + var(--title-visible-height)
+  );
 
   position: relative;
   height: calc(100svh + (var(--slides) - 1) * 60vh);
+  view-timeline: --exp block;
 }
 
 .exp-stage {
@@ -398,7 +401,37 @@ img {
   top: 0;
   height: 100svh;
   overflow: hidden;
-  padding-top: clamp(32px, 7vh, 80px);
+  padding-top: var(--stage-pad);
+}
+
+.exp-title {
+  position: relative;
+  z-index: 3;
+  width: var(--title-width);
+  height: var(--title-visible-height);
+  min-height: 0;
+  aspect-ratio: auto;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.exp-title img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  padding: 0;
+
+  /* Move image row 489 to the top of the cropped title box. */
+  transform: translateY(-45.27777778%);
+
+  mix-blend-mode: screen;
 }
 
 .exp-slide {
@@ -411,22 +444,6 @@ img {
     minmax(0, 1fr);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(40px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(.2, .7, .2, 1),
-    visibility 0s linear 0.7s;
-}
-
-.exp-slide.is-active {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition-delay: 0s;
-}
-
-.exp-slide.is-past {
-  transform: translateY(-40px);
 }
 
 .exp-media {
@@ -436,23 +453,21 @@ img {
   bottom: 0;
   width: 72%;
   background: var(--img) center / cover no-repeat;
+
   -webkit-mask-image: radial-gradient(
     ellipse 85% 80% at 100% 50%,
     #000 35%,
     transparent 100%
   );
+
   mask-image: radial-gradient(
     ellipse 85% 80% at 100% 50%,
     #000 35%,
     transparent 100%
   );
-  transform: scale(1.08);
-  transition: transform 1.2s ease;
-  pointer-events: none;
-}
 
-.exp-slide.is-active .exp-media {
-  transform: scale(1);
+  transform: scale(1.08);
+  pointer-events: none;
 }
 
 .exp-copy {
@@ -509,16 +524,222 @@ img {
   height: 6px;
   border-radius: 50%;
   background: #3a4448;
-  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.exp-dots span.on {
-  background: #8fb0b5;
-  transform: scale(1.5);
+
+/* ---------- Experience scroll ranges ---------- */
+
+.exp-slide:nth-of-type(1),
+.exp-dots span:nth-child(1) {
+  --a: 0%;
+  --b: 16.667%;
+}
+
+.exp-slide:nth-of-type(2),
+.exp-dots span:nth-child(2) {
+  --a: 16.667%;
+  --b: 33.333%;
+}
+
+.exp-slide:nth-of-type(3),
+.exp-dots span:nth-child(3) {
+  --a: 33.333%;
+  --b: 50%;
+}
+
+.exp-slide:nth-of-type(4),
+.exp-dots span:nth-child(4) {
+  --a: 50%;
+  --b: 66.667%;
+}
+
+.exp-slide:nth-of-type(5),
+.exp-dots span:nth-child(5) {
+  --a: 66.667%;
+  --b: 83.333%;
+}
+
+.exp-slide:nth-of-type(6),
+.exp-dots span:nth-child(6) {
+  --a: 83.333%;
+  --b: 100%;
+}
+
+
+/* ---------- Experience animations ---------- */
+
+@supports (animation-timeline: view()) {
+  .exp-slide {
+    animation: exp-slide linear both;
+    animation-timeline: --exp;
+    animation-range: contain var(--a) contain var(--b);
+  }
+
+  .exp-slide:first-of-type {
+    animation-name: exp-slide-first;
+  }
+
+  .exp-slide:last-of-type {
+    animation-name: exp-slide-last;
+  }
+
+  .exp-media {
+    animation: exp-zoom linear both;
+    animation-timeline: --exp;
+    animation-range: contain var(--a) contain var(--b);
+  }
+
+  .exp-dots span {
+    animation: exp-dot linear both;
+    animation-timeline: --exp;
+    animation-range: contain var(--a) contain var(--b);
+  }
+
+  .exp-dots span:first-child {
+    animation-name: exp-dot-first;
+  }
+
+  .exp-dots span:last-child {
+    animation-name: exp-dot-last;
+  }
+}
+
+@keyframes exp-slide {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(40px);
+  }
+
+  12%,
+  88% {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-40px);
+  }
+}
+
+@keyframes exp-slide-first {
+  0%,
+  88% {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-40px);
+  }
+}
+
+@keyframes exp-slide-last {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(40px);
+  }
+
+  12%,
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+
+@keyframes exp-zoom {
+  0% {
+    transform: scale(1.08);
+  }
+
+  30%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes exp-dot {
+  0%,
+  100% {
+    background: #3a4448;
+    transform: scale(1);
+  }
+
+  8%,
+  92% {
+    background: #8fb0b5;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes exp-dot-first {
+  0%,
+  92% {
+    background: #8fb0b5;
+    transform: scale(1.5);
+  }
+
+  100% {
+    background: #3a4448;
+    transform: scale(1);
+  }
+}
+
+@keyframes exp-dot-last {
+  0% {
+    background: #3a4448;
+    transform: scale(1);
+  }
+
+  8%,
+  100% {
+    background: #8fb0b5;
+    transform: scale(1.5);
+  }
+}
+
+
+/* ---------- Experience fallback ---------- */
+
+@supports not (animation-timeline: view()) {
+  .exp-track {
+    height: auto;
+  }
+
+  .exp-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .exp-slide {
+    position: relative;
+    inset: auto;
+    min-height: 100svh;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .exp-media {
+    transform: none;
+  }
+
+  .exp-dots {
+    display: none;
+  }
 }
 
 
 /* ---------- Work ---------- */
+
 .work {
   position: relative;
   z-index: 1;
@@ -615,7 +836,9 @@ img {
 .work.js-reveal .work-item {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s ease;
 }
 
 .work.js-reveal .work-item.is-in {
@@ -625,6 +848,7 @@ img {
 
 
 /* ---------- Contact / Outro ---------- */
+
 .contact {
   --contact-fade: clamp(120px, 20vh, 240px);
 
@@ -642,15 +866,18 @@ img {
   position: absolute;
   inset: -16px;
   z-index: 0;
+
   background:
     url('Images/ContactBgImg.png')
     center center / cover
     no-repeat;
+
   transform: translate3d(
     var(--contact-x, 0px),
     var(--contact-y, 0px),
     0
   );
+
   pointer-events: none;
 }
 
@@ -659,6 +886,7 @@ img {
   position: absolute;
   inset: 0;
   z-index: 1;
+
   background:
     linear-gradient(
       to bottom,
@@ -674,6 +902,7 @@ img {
       rgba(3, 6, 10, 0.18) 54%,
       transparent 75%
     );
+
   pointer-events: none;
 }
 
@@ -682,6 +911,7 @@ img {
   position: absolute;
   inset: 0;
   z-index: 4;
+
   background:
     linear-gradient(
       to top,
@@ -697,20 +927,22 @@ img {
       rgba(0, 0, 0, 0.09) 2px,
       rgba(0, 0, 0, 0.09) 3px
     );
+
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
     #000 var(--contact-fade)
   );
+
   mask-image: linear-gradient(
     to bottom,
     transparent,
     #000 var(--contact-fade)
   );
+
   pointer-events: none;
 }
 
-/* Reduced from 0.055 to 0.03. */
 .contact-noise {
   position: absolute;
   inset: 0;
@@ -718,6 +950,7 @@ img {
   width: 100%;
   height: 100%;
   opacity: 0.03;
+
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0,
@@ -725,6 +958,7 @@ img {
     #000 72%,
     transparent 100%
   );
+
   mask-image: linear-gradient(
     to bottom,
     transparent 0,
@@ -732,6 +966,7 @@ img {
     #000 72%,
     transparent 100%
   );
+
   pointer-events: none;
 }
 
@@ -788,11 +1023,13 @@ img {
   right: 0;
   bottom: 0;
   height: 1px;
+
   background: linear-gradient(
     90deg,
     rgba(143, 176, 181, 0.55),
     rgba(143, 176, 181, 0.08)
   );
+
   transform: scaleX(0.28);
   transform-origin: left;
   transition: transform 0.4s ease;
@@ -828,6 +1065,7 @@ img {
 
 
 /* ---------- Footer ---------- */
+
 .site-footer {
   position: relative;
   isolation: isolate;
@@ -848,16 +1086,14 @@ img {
   display: block;
   width: clamp(140px, 16vw, 210px);
   height: auto;
-
-  /* Dark image background blends into the footer. */
   mix-blend-mode: screen;
 
-  /* Softens the outside edges without a visible image box. */
   -webkit-mask-image: radial-gradient(
     ellipse 70% 85% at center,
     #000 62%,
     transparent 100%
   );
+
   mask-image: radial-gradient(
     ellipse 70% 85% at center,
     #000 62%,
@@ -919,6 +1155,7 @@ img {
 
 
 /* ---------- Tablets ---------- */
+
 @media (max-width: 840px) {
   .navbar {
     padding: 20px 16px;
@@ -944,6 +1181,7 @@ img {
 
 
 /* ---------- Phones ---------- */
+
 @media (max-width: 600px) {
   .hero {
     height: 100svh;
@@ -1015,11 +1253,13 @@ img {
   .exp-media {
     width: 100%;
     opacity: 0.55;
+
     -webkit-mask-image: linear-gradient(
       to bottom,
       #000 30%,
       transparent 95%
     );
+
     mask-image: linear-gradient(
       to bottom,
       #000 30%,
@@ -1074,7 +1314,6 @@ img {
 
   .contact {
     --contact-fade: 140px;
-
     min-height: 90svh;
     align-items: end;
   }
@@ -1154,6 +1393,7 @@ img {
 
 
 /* ---------- Reduced motion ---------- */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1165,16 +1405,42 @@ img {
   .bg-layer,
   .about-text .w,
   .about-text .kw,
-  .exp-slide,
-  .exp-media,
   .skill-list li,
-  .exp-dots span,
   .contact-email,
   .contact-email::after,
   .contact-email svg,
   .footer-top,
   .footer-top svg {
     transition: none;
+  }
+
+  .exp-track {
+    height: auto;
+  }
+
+  .exp-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .exp-slide {
+    position: relative;
+    inset: auto;
+    min-height: 100svh;
+    animation: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .exp-media {
+    animation: none;
+    transform: none;
+  }
+
+  .exp-dots {
+    display: none;
   }
 
   .work.js-reveal .work-item {
